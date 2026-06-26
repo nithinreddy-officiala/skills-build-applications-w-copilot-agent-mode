@@ -5,15 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.apiBaseUrl = void 0;
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const users_1 = __importDefault(require("./routes/users"));
 const teams_1 = __importDefault(require("./routes/teams"));
 const activities_1 = __importDefault(require("./routes/activities"));
 const leaderboard_1 = __importDefault(require("./routes/leaderboard"));
 const workouts_1 = __importDefault(require("./routes/workouts"));
+const database_1 = require("./database");
 const app = (0, express_1.default)();
 const PORT = Number(process.env.PORT) || 8000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/octofit_db';
 const codespaceName = process.env.CODESPACE_NAME;
 exports.apiBaseUrl = codespaceName
     ? `https://${codespaceName}-8000.app.github.dev`
@@ -31,8 +30,7 @@ app.use('/api/teams', teams_1.default);
 app.use('/api/activities', activities_1.default);
 app.use('/api/leaderboard', leaderboard_1.default);
 app.use('/api/workouts', workouts_1.default);
-mongoose_1.default
-    .connect(MONGO_URI)
+(0, database_1.connectToDatabase)()
     .then(() => {
     console.log('MongoDB connected');
     app.listen(PORT, () => {
